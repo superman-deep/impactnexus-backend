@@ -57,24 +57,24 @@ Example response:
 
 ### `GET /api/farm/{farm_id}/advisory`
 
-Purpose: return fixed mock risks and recommendations. Request parameter: path `farm_id`.
+Purpose: return Gemini Flash risks and regenerative recommendations for the farm signals. The same signals are cached for 12 hours. `source` is `gemini`, `cache`, `demo`, `quota`, or `unavailable`. Request parameter: path `farm_id`.
 
 Example response:
 
 ```json
-{"water_stress":"Moderate","heat_stress":"Low","disease_risk":"Medium","yield_risk":"Low","recommendations":["Irrigate early morning for 25 minutes within the next 48 hours.","Inspect lower leaves for early blight symptoms."],"feature_importance":{"NDVI":0.34,"soil_moisture":0.29,"rainfall":0.21,"temperature":0.16}}
+{"farm_health":78,"water_stress":"Moderate","heat_stress":"Low","disease_risk":"Medium","yield_risk":"Low","recommendation":"Irrigate early morning for 25 minutes within the next 48 hours.","reason":"Soil moisture is adequate today, but forecast conditions may increase water demand.","priority":"High","recommendations":[{"category":"Irrigation","text":"Irrigate early morning for 25 minutes within the next 48 hours.","priority":"High"}],"feature_importance":{"NDVI":34,"soil_moisture":29,"rainfall":21,"temperature":16},"source":"cache"}
 ```
 
 ## Crop Doctor API
 
 ### `POST /api/crop-doctor`
 
-Purpose: accept a leaf image and return a fixed mock diagnosis; no ML model runs. Request body: `multipart/form-data`, with required `leaf_image` image file.
+Purpose: accept a leaf image and diagnose it with Gemini Flash vision. Identical image bytes are cached for 7 days. Request body: `multipart/form-data`, with required `leaf_image` image file (8 MB max). `confidence` is an integer from 0 to 100.
 
 Example response:
 
 ```json
-{"disease":"Early blight","confidence":0.91,"severity":"Moderate","symptoms":["Dark concentric spots","Yellowing lower leaves"],"next_action":"Remove severely affected leaves and consult local guidance before treatment."}
+{"disease":"Early blight","confidence":91,"severity":"Moderate","symptoms":["Dark concentric spots","Yellowing lower leaves"],"next_action":"Remove severely affected leaves and consult local guidance before treatment.","source":"gemini"}
 ```
 
 ## BRICS API
@@ -83,7 +83,7 @@ Example response:
 
 Purpose: list mock model registry records for India, Brazil, China, Russia, and South Africa. Request: none.
 
-Example response: `[{"country":"India","model_name":"AgriNexus Advisory","version":"0.1","purpose":"Farm risk advisory","status":"mock"}]`
+Example response: `[{"country":"India","crop":"Tomato","model":"AgriNexus Advisory","version":"0.1","status":"Active"}]`
 
 ### `GET /api/brics/schema`
 
